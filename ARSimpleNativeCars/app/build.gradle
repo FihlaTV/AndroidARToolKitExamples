@@ -11,7 +11,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                cppFlags "-DDEBUG"
+                cppFlags "-fexceptions", "-frtti"
             }
         }
     }
@@ -26,10 +26,9 @@ android {
             path "CMakeLists.txt"
         }
     }
-
     sourceSets {
         main {
-            jniLibs.srcDirs "libs"
+            jniLibs.srcDirs "../../ExternalLibs/obj/local"
         }
     }
 }

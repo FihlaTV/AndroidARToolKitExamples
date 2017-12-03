@@ -5,65 +5,18 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-# Creates and names a library, sets it as either STATIC
-# or SHARED, and provides the relative paths to its source code.
-# You can define multiple libraries, and CMake builds them for you.
-# Gradle automatically packages shared libraries with your APK.
-
-add_library( # Sets the name of the library.
-             ARWrapperNativeExample
-
-             # Sets the library as a shared library.
-             SHARED
-
-             # Provides a relative path to your source file(s).
-             src/main/cpp/ARWrapperNativeExample.cpp )
+set(EXT_LIBS "/Users/herbert/AndroidProjects/AndroidARToolKitExamples/ExternalLibs/")
+add_library(ARWrapperNativeExample SHARED src/main/cpp/ARWrapperNativeExample.cpp )
 
 add_library(ARWrapper SHARED IMPORTED)
 add_library(c++_shared SHARED IMPORTED)
 
+set_target_properties(ARWrapper PROPERTIES IMPORTED_LOCATION ${EXT_LIBS}/obj/local/${ANDROID_ABI}/libARWrapper.so )
+set_target_properties(c++_shared PROPERTIES IMPORTED_LOCATION ${EXT_LIBS}/obj/local/${ANDROID_ABI}/libc++_shared.so )
+include_directories(${EXT_LIBS}/include)
 
-set_target_properties( # Specifies the target library.
-                       ARWrapper
-
-                       # Specifies the parameter you want to define.
-                       PROPERTIES IMPORTED_LOCATION
-
-                       # Provides the path to the library you want to import.
-                       /Users/herbert/AndroidProjects/AndroidARToolKitExamples/ARSimpleNative/app/libs/${ANDROID_ABI}/libARWrapper.so )
-
-set_target_properties( # Specifies the target library.
-                       c++_shared
-
-                       # Specifies the parameter you want to define.
-                       PROPERTIES IMPORTED_LOCATION
-
-                       # Provides the path to the library you want to import.
-                       /Users/herbert/AndroidProjects/AndroidARToolKitExamples/ARSimpleNative/app/libs/${ANDROID_ABI}/libc++_shared.so )
-include_directories(include/)
-
-# Searches for a specified prebuilt library and stores the path as a
-# variable. Because CMake includes system libraries in the search path by
-# default, you only need to specify the name of the public NDK library
-# you want to add. CMake verifies that the library exists before
-# completing its build.
-
-find_library( # Sets the name of the path variable.
-              log-lib
-
-              # Specifies the name of the NDK library that
-              # you want CMake to locate.
-              log )
-
+find_library(log-lib log)
 find_library(glesv1 GLESv1_CM)
 
-# Specifies libraries CMake should link to your target library. You
-# can link multiple libraries, such as libraries you define in this
-# build script, prebuilt third-party libraries, or system libraries.
-
-target_link_libraries( # Specifies the target library.
-                       ARWrapperNativeExample
-
-                       # Links the target library to the log library
-                       # included in the NDK.
-                       c++_shared  ${glesv1} ARWrapper ${log-lib} )
+target_link_libraries(ARWrapperNativeExample
+                        c++_shared  ${glesv1} ARWrapper ${log-lib} )
